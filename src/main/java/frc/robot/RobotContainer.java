@@ -93,20 +93,24 @@ public class RobotContainer {
   JoystickButton aButton = new JoystickButton(m_driverController, Button.kA.value);
   JoystickButton bButton = new JoystickButton(m_driverController, Button.kB.value);
 
+  JoystickButton startButton = new JoystickButton(m_driverController, Button.kStart.value);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
   
-    xButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeIn,m_Shooter::intakeOut,m_Shooter));
-    yButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeOut,m_Shooter::intakeIn,m_Shooter));
+      leftBumper.toggleOnTrue(new StartEndCommand (m_Intake::intakeIn,m_Intake::intakeOff,m_Intake));
+      rightBumper.toggleOnTrue(new StartEndCommand (m_Intake::intakeOut,m_Intake::intakeOff,m_Intake));
 
-    rightBumper.toggleOnTrue(new StartEndCommand(m_Conveyer::conveyorBack,m_Conveyer::conveyorOff,m_Conveyer));
-    leftBumper.toggleOnTrue(new StartEndCommand (m_Intake::intakeIn,m_Intake::intakeOff,m_Intake));
+      bButton.onTrue(new StartEndCommand (m_Arm::ArmDown,m_Arm::ArmUp,m_Arm));
+      aButton.onTrue(new StartEndCommand (m_Arm::ArmUp,m_Arm::ArmDown,m_Arm));
+  
+      // startButton.toggleOnTrue(new toggleFastMode( m_robotDrive));
 
-    aButton.toggleOnTrue(new StartEndCommand (m_Conveyer::conveyorForward,m_Conveyer::conveyorOff,m_Conveyer));
-    bButton.toggleOnTrue(new StartEndCommand (m_Intake::intakeIn,m_Intake::intakeOff,m_Intake));
+      yButton.onTrue(new StartEndCommand (m_Climber::climberUp,m_Climber::climberDown,m_Climber));
+      xButton.onTrue(new StartEndCommand (m_Climber::climberDown,m_Climber::climberUp,m_Climber));
     
     
       // m_Climber.setDefaultCommand(
