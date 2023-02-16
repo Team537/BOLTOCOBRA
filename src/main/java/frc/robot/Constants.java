@@ -205,7 +205,7 @@ public final class Constants {
   public static class IntakeConstants {
 
     public static final int kIntake = 8;
-    public static final int kIntake2 = 5;
+    public static final int kIntake2 = 20;
 
   }
   public static class ConveyerConstants {
