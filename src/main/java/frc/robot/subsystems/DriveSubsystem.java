@@ -14,10 +14,12 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import utils.AccelerationLimiter;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SPI;
+import utils.AccelerationLimiter;
 
 public class DriveSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_frontLeft = new WPI_TalonFX(DriveConstants.kFrontLeft);
@@ -82,10 +84,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setInverted(true);
 
     // 1. No effect
-    m_frontRight.setNeutralMode(NeutralMode.Brake);
-    m_frontLeft.setNeutralMode(NeutralMode.Brake);
-    m_rearRight.setNeutralMode(NeutralMode.Brake);
-    m_rearLeft.setNeutralMode(NeutralMode.Brake);
+    m_frontRight.setNeutralMode(NeutralMode.Coast);
+    m_frontLeft.setNeutralMode(NeutralMode.Coast);
+    m_rearRight.setNeutralMode(NeutralMode.Coast);
+    m_rearLeft.setNeutralMode(NeutralMode.Coast);
 
   m_frontLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
   m_frontRight.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
@@ -278,13 +280,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Called continuously when driving in auto or teleop
   public void setMotors(double leftSpeed, double rightSpeed) {
-    double clampedLeftSpeed = fastModeEnabled ? leftSpeed: leftSpeed*.15;
-    double clampedRightSpeed = fastModeEnabled ? rightSpeed: rightSpeed*.15;
+    // double clampedLeftSpeed = fastModeEnabled ? leftSpeed: leftSpeed;
+    // double clampedRightSpeed = fastModeEnabled ? rightSpeed: rightSpeed;
     
-    m_frontLeft.set(clampedLeftSpeed);
-    m_frontRight.set(clampedRightSpeed);
-    m_rearLeft.set(clampedLeftSpeed);
-    m_rearRight.set(clampedRightSpeed);
+    m_frontLeft.set(leftSpeed*1.5);
+    m_frontRight.set(rightSpeed*1.5);   //change speeds with multiplyers here
+    m_rearLeft.set(leftSpeed*1.5);
+    m_rearRight.set(rightSpeed*1.5);
   }
 
   /** Zeroes the heading of the robot. */

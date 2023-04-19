@@ -21,17 +21,17 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 public final class Constants {
   public static final class DriveConstants {
 
-    public static final int kFrontLeft = 9;
+    /*public static final int kFrontLeft = 9;
     public static final int kRearLeft = 3;
     public static final int kFrontRight = 5;
-    public static final int kRearRight = 7;
+    public static final int kRearRight = 7;*/
 
     //For Bolt Testing 
-    /*
+    
      public static final int kFrontLeft = 1;
      public static final int kRearLeft = 3;
      public static final int kFrontRight = 2;
-     public static final int kRearRight = 4;*/
+     public static final int kRearRight = 4;
 
     public static final double kTrackwidthMeters = 0.8509;
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
