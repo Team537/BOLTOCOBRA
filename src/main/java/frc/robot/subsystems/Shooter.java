@@ -34,7 +34,7 @@ public class Shooter extends SubsystemBase {
     m_Intake.set(0.0);
   }
   public void intakeOut() {
-    m_Intake.set(-0.8);
+    m_Intake.set(-0.5);
   }
 
 
