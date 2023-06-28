@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -22,17 +24,21 @@ import edu.wpi.first.wpilibj.SPI;
 import utils.AccelerationLimiter;
 
 public class DriveSubsystem extends SubsystemBase {
+  //left
   private final WPI_TalonFX m_frontLeft = new WPI_TalonFX(DriveConstants.kFrontLeft);
   private final WPI_TalonFX m_rearLeft = new WPI_TalonFX(DriveConstants.kRearLeft);
   private final WPI_TalonFX m_frontRight = new WPI_TalonFX(DriveConstants.kFrontRight);
+  //right
   private final WPI_TalonFX m_rearRight = new WPI_TalonFX(DriveConstants.kRearRight);
+  private final WPI_TalonFX m_centerLeft = new WPI_TalonFX(DriveConstants.kCenterLeft);
+  private final WPI_TalonFX m_centerRight = new WPI_TalonFX(DriveConstants.kCenterRight);
 
   // The motors on the left side of the drive.
-  private final MotorControllerGroup m_left = new MotorControllerGroup(m_frontLeft, m_rearLeft);
+  private final MotorControllerGroup m_left = new MotorControllerGroup(m_frontLeft, m_centerLeft, m_rearLeft);
 
   // The motors on the right side of the drive.
-  private final MotorControllerGroup m_right = new MotorControllerGroup(m_frontRight, m_rearRight);
-
+  private final MotorControllerGroup m_right = new MotorControllerGroup(m_frontRight, m_centerRight, m_rearRight);
+  
   // The robot's drive
   // THE PROBLEM CHILD. This line being uncommented was causing our issues
  // private final DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
@@ -46,26 +52,33 @@ public class DriveSubsystem extends SubsystemBase {
 
   private boolean fastModeEnabled = true; 
   /** Creates a new DriveSubsystem. */
+
+
+  public void motorDefaults(WPI_TalonFX m_motor, boolean inversion) {
+    m_motor.configFactoryDefault(Constants.kTimeoutMs);
+    m_motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.kPIDLoopIdx,
+    Constants.kTimeoutMs);
+    m_motor.setInverted(inversion);
+    m_motor.setNeutralMode(NeutralMode.Coast);
+    m_motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
+    m_motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
+    m_motor.configNominalOutputForward(0, Constants.kTimeoutMs);
+    m_motor.configNominalOutputReverse(0, Constants.kTimeoutMs);
+    m_motor.configPeakOutputForward(1, Constants.kTimeoutMs);
+    m_motor.configPeakOutputReverse(-1, Constants.kTimeoutMs);
+    m_motor.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+    m_motor.configMotionSCurveStrength(Constants.smoothing);
+    m_motor.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+    m_motor.configMotionSCurveStrength(Constants.smoothing);
+    m_motor.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+  }
   public DriveSubsystem() {
     // m_frontLeft
     // m_frontRight
     // m_rearLeft
     // m_rearRight
-
-    m_frontLeft.configFactoryDefault(Constants.kTimeoutMs);
-    m_frontRight.configFactoryDefault(Constants.kTimeoutMs);
-    m_rearLeft.configFactoryDefault(Constants.kTimeoutMs);
-    m_rearRight.configFactoryDefault(Constants.kTimeoutMs);
-
-    // 2. No effect
-    m_frontLeft.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.kPIDLoopIdx,
-        Constants.kTimeoutMs);
-    m_frontRight.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.kPIDLoopIdx,
-        Constants.kTimeoutMs);
-    m_rearLeft.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.kPIDLoopIdx,
-        Constants.kTimeoutMs);
-    m_rearRight.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.kPIDLoopIdx,
-        Constants.kTimeoutMs);
+    // m_centerLeft
+    // m_centerRight
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -77,57 +90,23 @@ public class DriveSubsystem extends SubsystemBase {
     // m_rearRight.setInverted(true);
 
     //bolt inverts
-    
-    m_frontLeft.setInverted(false);
-    m_frontRight.setInverted(true);
-    m_rearLeft.setInverted(false);
-    m_rearRight.setInverted(true);
+    motorDefaults(m_frontLeft, false);
+    motorDefaults(m_frontRight, true);
+    motorDefaults(m_rearLeft, false);
+    motorDefaults(m_rearRight, true);
+
+    // inversions to change
+    motorDefaults(m_centerLeft, false);
+    motorDefaults(m_centerRight, false);
+
+    //
 
     // 1. No effect
-    m_frontRight.setNeutralMode(NeutralMode.Coast);
-    m_frontLeft.setNeutralMode(NeutralMode.Coast);
-    m_rearRight.setNeutralMode(NeutralMode.Coast);
-    m_rearLeft.setNeutralMode(NeutralMode.Coast);
-
-  m_frontLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
-  m_frontRight.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
-  m_rearRight.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
-  m_rearLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
-  
-  m_frontLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
-  m_frontRight.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
-  m_rearLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
-  m_rearRight.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
-
-  m_frontLeft.configNominalOutputForward(0, Constants.kTimeoutMs);
-  m_frontRight.configNominalOutputForward(0, Constants.kTimeoutMs);
-  m_rearLeft.configNominalOutputForward(0, Constants.kTimeoutMs);
-  m_rearRight.configNominalOutputForward(0, Constants.kTimeoutMs);
-
-  m_frontLeft.configNominalOutputReverse(0, Constants.kTimeoutMs);
-  m_frontRight.configNominalOutputReverse(0, Constants.kTimeoutMs);
-  m_rearLeft.configNominalOutputReverse(0, Constants.kTimeoutMs);
-  m_rearRight.configNominalOutputReverse(0, Constants.kTimeoutMs);
-
-  m_frontLeft.configPeakOutputForward(1, Constants.kTimeoutMs);
-  m_frontRight.configPeakOutputForward(1, Constants.kTimeoutMs);
-  m_rearLeft.configPeakOutputForward(1, Constants.kTimeoutMs);
-  m_rearRight.configPeakOutputForward(1, Constants.kTimeoutMs);
-
+    
   // m_frontLeft.configAllowableClosedloopError(Constants.kSlotIdx, 5, Constants.kTimeoutMs);
   // m_frontRight.configAllowableClosedloopError(Constants.kSlotIdx, 5, Constants.kTimeoutMs);
   // m_rearLeft.configAllowableClosedloopError(Constants.kSlotIdx, 5, Constants.kTimeoutMs);
-  // m_rearLeft.configAllowableClosedloopError(Constants.kSlotIdx, 5, Constants.kTimeoutMs);
-
-  m_frontLeft.configPeakOutputReverse(-1, Constants.kTimeoutMs);
-  m_frontRight.configPeakOutputReverse(-1, Constants.kTimeoutMs);
-  m_rearLeft.configPeakOutputReverse(-1, Constants.kTimeoutMs);
-  m_rearRight.configPeakOutputReverse(-1, Constants.kTimeoutMs);
-
-  m_frontLeft.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-  m_frontRight.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-  m_rearLeft.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-  m_rearRight.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+  // m_rearLeft.configAllowableClosedloopError(Constants.kSlotIdx, 5, Constants.kTimeoutMs)
 
   // m_frontLeft.config_kF(Constants.kSlotIdx, Constants.kGains.kF, Constants.kTimeoutMs);
   // m_frontRight.config_kF(Constants.kSlotIdx, Constants.kGains.kF, Constants.kTimeoutMs);
@@ -158,16 +137,6 @@ public class DriveSubsystem extends SubsystemBase {
 	// m_frontRight.configMotionAcceleration(6000, Constants.kTimeoutMs);
   // m_rearLeft.configMotionAcceleration(6000, Constants.kTimeoutMs);
   // m_rearRight.configMotionAcceleration(6000, Constants.kTimeoutMs);
-
-  m_frontLeft.configMotionSCurveStrength(Constants.smoothing);
-	m_frontRight.configMotionSCurveStrength(Constants.smoothing);
-  m_rearLeft.configMotionSCurveStrength(Constants.smoothing);
-  m_rearRight.configMotionSCurveStrength(Constants.smoothing);
-
-   m_frontLeft.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
-    m_frontRight.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
-    m_rearLeft.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
-    m_rearRight.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
 
    // Sets the distance per pulse for the encoders
     // m_frontLeft.configPulseWidthPeriod_EdgesPerRot(4096, Constants.kTimeoutMs);
@@ -265,6 +234,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
     m_rearLeft.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
     m_rearRight.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+    m_centerLeft.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+    m_centerRight.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
 
   }
 
@@ -287,6 +258,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.set(rightSpeed*1.5);   //change speeds with multiplyers here
     m_rearLeft.set(leftSpeed*1.5);
     m_rearRight.set(rightSpeed*1.5);
+    m_centerLeft.set(rightSpeed*1.5);
+    m_centerRight.set(rightSpeed*1.5);
   }
 
   /** Zeroes the heading of the robot. */
@@ -306,12 +279,17 @@ public class DriveSubsystem extends SubsystemBase {
 		m_rearLeft.configMotionAcceleration(6159, Constants.kTimeoutMs); //cruise velocity / 2, so will take 2 seconds
 		m_rearRight.configMotionCruiseVelocity(12318, Constants.kTimeoutMs);
 		m_rearRight.configMotionAcceleration(6159, Constants.kTimeoutMs);
-		
+		m_centerLeft.configMotionCruiseVelocity(12318, Constants.kTimeoutMs);
+		m_centerLeft.configMotionAcceleration(6159, Constants.kTimeoutMs);
+    m_centerRight.configMotionCruiseVelocity(12318, Constants.kTimeoutMs);
+		m_centerRight.configMotionAcceleration(6159, Constants.kTimeoutMs);
 		//set up talon to use DriveMM slots
 	m_frontLeft.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
   m_frontRight.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
   m_rearLeft.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
   m_rearRight.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+  m_centerLeft.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+  m_centerRight.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
 
 	
 		// if(isForward == true){
@@ -329,7 +307,9 @@ public class DriveSubsystem extends SubsystemBase {
 		m_frontLeft.set(ControlMode.MotionMagic, m_left_setpoint); //, DemandType.ArbitraryFeedForward, arbFF);
 		m_frontRight.set(ControlMode.MotionMagic, m_right_setpoint);//, DemandType.ArbitraryFeedForward, arbFF);
     m_rearLeft.set(ControlMode.MotionMagic, m_left_setpoint); //, DemandType.ArbitraryFeedForward, arbFF);
-		m_rearRight.set(ControlMode.MotionMagic, m_right_setpoint);//, DemandType.ArbitraryFeedForward, arbFF);
+		m_rearRight.set(ControlMode.MotionMagic, m_right_setpoint);
+    m_rearRight.set(ControlMode.MotionMagic, m_right_setpoint);
+    m_rearRight.set(ControlMode.MotionMagic, m_right_setpoint);//, DemandType.ArbitraryFeedForward, arbFF);
 		// m_left_leader.set(ControlMode.MotionMagic, target_position);
 		// m_right_leader.set(ControlMode.MotionMagic, target_position);
 	
