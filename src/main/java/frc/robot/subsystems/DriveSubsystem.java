@@ -14,12 +14,12 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import utils.AccelerationLimiter;
+
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SPI;
-import utils.AccelerationLimiter;
+
 
 public class DriveSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_frontLeft = new WPI_TalonFX(DriveConstants.kFrontLeft);
@@ -283,10 +283,11 @@ public class DriveSubsystem extends SubsystemBase {
     // double clampedLeftSpeed = fastModeEnabled ? leftSpeed: leftSpeed;
     // double clampedRightSpeed = fastModeEnabled ? rightSpeed: rightSpeed;
     
-    m_frontLeft.set(leftSpeed*1.5);
-    m_frontRight.set(rightSpeed*1.5);   //change speeds with multiplyers here
-    m_rearLeft.set(leftSpeed*1.5);
-    m_rearRight.set(rightSpeed*1.5);
+    
+    m_frontLeft.set(leftSpeed);
+    m_frontRight.set(rightSpeed);   //change speeds with multiplyers here
+    m_rearLeft.set(leftSpeed);
+    m_rearRight.set(rightSpeed);
   }
 
   /** Zeroes the heading of the robot. */
