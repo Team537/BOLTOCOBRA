@@ -4,34 +4,33 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pneumatics extends SubsystemBase {
-  PneumaticHub m_PneumaticHub = new PneumaticHub(11);  
-  private static int LforwardChannel =14;
-  private static int LreverseChannel =15;
+  PneumaticHub m_PneumaticHub = new PneumaticHub(1);  
   // private static int RforwardChannel =0;
   // private static int RreverseChannel =1;
   /** Creates a new Pneumatics. */
-  DoubleSolenoid m_LdoubleSolenoid = m_PneumaticHub.makeDoubleSolenoid(LforwardChannel,LreverseChannel);
+  Solenoid m_tshirtsolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
  // DoubleSolenoid m_RdoubleSolenoid = m_PneumaticHub.makeDoubleSolenoid(RforwardChannel,RreverseChannel);
 
   public Pneumatics() {
 
 
   }
-  public void ClimberNeutral() {
-    m_LdoubleSolenoid.set(DoubleSolenoid.Value.kOff);
+  public void Neutral() {
+    m_tshirtsolenoid.set(false);
 
   }
-  public void ClimberAngled() {
-    m_LdoubleSolenoid.set(DoubleSolenoid.Value.kForward);
+  public void OpenValve() {
+    m_tshirtsolenoid.set(true);
 
   }
-  public void ClimberStraight() {
-    m_LdoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+  public void CloseValve () {
+    m_tshirtsolenoid.set(false);
   //  m_RdoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
 
   }

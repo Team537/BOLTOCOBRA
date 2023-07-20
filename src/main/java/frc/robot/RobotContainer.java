@@ -42,6 +42,7 @@ import frc.robot.commands.BasicAuto;
 import frc.robot.commands.DriveForwardCommand;
 import frc.robot.commands.GyroTurn;
 import frc.robot.commands.MotionMagicDrive;
+import frc.robot.commands.shoot;
 import frc.robot.commands.toggleFastMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -80,6 +81,8 @@ public class RobotContainer {
     private final camera m_camera = new camera();
     private final Conveyer m_Conveyer = new Conveyer();
     private final Shooter m_Shooter = new Shooter();
+    
+    Command shootshirt = new shoot(m_Pneumatics);
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_driverController2 = new XboxController(OIConstants.kDriverControllerPort);
@@ -100,8 +103,11 @@ public class RobotContainer {
   public RobotContainer() {
   
     xButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeIn,m_Shooter::intakeOff,m_Shooter));
-    yButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeOut,m_Shooter::intakeOff,m_Shooter));
+    // yButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeOut,m_Shooter::intakeOff,m_Shooter));
+    // bButton.onTrue(new StartEndCommand(m_Pneumatics::OpenValve, m_Pneumatics::OpenValve, m_Pneumatics));
+    // yButton.onTrue(new StartEndCommand(m_Pneumatics::CloseValve, m_Pneumatics::CloseValve, m_Pneumatics));
 
+    bButton.onTrue(shootshirt);
     rightBumper.toggleOnTrue(new StartEndCommand(m_Conveyer::conveyorBack,m_Conveyer::conveyorOff,m_Conveyer));
     // leftBumper.toggleOnTrue(new StartEndCommand (m_Intake::intakeIn,m_Intake::intakeOff,m_Intake));
 
@@ -109,7 +115,7 @@ public class RobotContainer {
     // bButton.toggleOnTrue(new StartEndCommand (m_Intake::intakeIn,m_Intake::intakeOff,m_Intake));
     
     
-      // m_Climber.setDefaultCommand(
+      // m_Climber.setDefaulxtCommand(
       //   new RunCommand(
       //       () -> {
       //         int ClimberCount = 0;
