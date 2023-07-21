@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -14,12 +15,14 @@ import frc.robot.subsystems.Pneumatics;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class shoot extends SequentialCommandGroup {
   /** Creates a new shoot. */
-  public shoot(Pneumatics m_tshirtsolenoid) {
+  public shoot(Pneumatics tShirtSolenoid) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new StartEndCommand(m_tshirtsolenoid::OpenValve,m_tshirtsolenoid::OpenValve, m_tshirtsolenoid),
+    addCommands(new InstantCommand(tShirtSolenoid::OpenValve, tShirtSolenoid),
+    // Wait Command keeps the valve open for a predetermined amount of time
     new WaitCommand(1),
-    new StartEndCommand(m_tshirtsolenoid::CloseValve,m_tshirtsolenoid::CloseValve, m_tshirtsolenoid));
+    new InstantCommand(tShirtSolenoid::CloseValve, tShirtSolenoid),
+    new WaitCommand(1));
 
   }
 }
