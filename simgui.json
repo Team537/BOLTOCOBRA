@@ -1,0 +1,10 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Arm": "Subsystem",
+      "/SmartDashboard/DriveSubsystem": "Subsystem",
+      "/SmartDashboard/Scheduler": "Scheduler"
+    }
+  }
+}

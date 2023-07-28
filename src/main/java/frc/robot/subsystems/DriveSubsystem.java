@@ -307,8 +307,6 @@ public class DriveSubsystem extends SubsystemBase {
 		m_frontLeft.set(ControlMode.MotionMagic, m_left_setpoint); //, DemandType.ArbitraryFeedForward, arbFF);
 		m_frontRight.set(ControlMode.MotionMagic, m_right_setpoint);//, DemandType.ArbitraryFeedForward, arbFF);
     m_rearLeft.set(ControlMode.MotionMagic, m_left_setpoint); //, DemandType.ArbitraryFeedForward, arbFF);
-		m_rearRight.set(ControlMode.MotionMagic, m_right_setpoint);
-    m_rearRight.set(ControlMode.MotionMagic, m_right_setpoint);
     m_rearRight.set(ControlMode.MotionMagic, m_right_setpoint);//, DemandType.ArbitraryFeedForward, arbFF);
 		// m_left_leader.set(ControlMode.MotionMagic, target_position);
 		// m_right_leader.set(ControlMode.MotionMagic, target_position);

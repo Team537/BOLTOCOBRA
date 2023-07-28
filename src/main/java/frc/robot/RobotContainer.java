@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.wpilibj.XboxController.Button;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.XboxController.Button;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.PneumaticConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -53,8 +55,11 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import java.io.Console;
 import java.io.IOException;
+import java.lang.ModuleLayer.Controller;
 import java.nio.file.Path;
+import java.time.Period;
 import java.util.List;
 
 import javax.swing.SwingConstants;
@@ -69,33 +74,34 @@ import javax.swing.SwingConstants;
  * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+  public class RobotContainer {
   // The robot's subsystems
-   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-   private final climber m_Climber = new climber();
-   private final Intake m_Intake = new Intake(); 
-   private final Arm m_Arm = new Arm();
-   private final Pneumatics m_Pneumatics = new Pneumatics();
-   private final SlewRateLimiter Left = new SlewRateLimiter(3);
-    private final SlewRateLimiter Right = new SlewRateLimiter(3);
-    private final camera m_camera = new camera();
-    private final Conveyer m_Conveyer = new Conveyer();
-    private final Shooter m_Shooter = new Shooter();
-    
-    Command shootshirt = new shoot(m_Pneumatics);
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final climber m_Climber = new climber();
+  private final Intake m_Intake = new Intake(); 
+  private final Arm m_Arm = new Arm();
+  private final Pneumatics m_Pneumatics = new Pneumatics();
+  private final SlewRateLimiter Left = new SlewRateLimiter(3);
+  private final SlewRateLimiter Right = new SlewRateLimiter(3);
+  private final camera m_camera = new camera();
+  private final Conveyer m_Conveyer = new Conveyer();
+  private final Shooter m_Shooter = new Shooter();
+  
+  Command shootshirt = new shoot(m_Pneumatics);
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_driverController2 = new XboxController(OIConstants.kDriverControllerPort);
 
   JoystickButton yButton = new JoystickButton(m_driverController, Button.kY.value);
   JoystickButton xButton = new JoystickButton(m_driverController, Button.kX.value);
+  JoystickButton aButton = new JoystickButton(m_driverController, Button.kA.value);
+  JoystickButton bButton = new JoystickButton(m_driverController, Button.kB.value);
 
   JoystickButton rightBumper = new JoystickButton(m_driverController, Button.kRightBumper.value);
   JoystickButton leftBumper = new JoystickButton(m_driverController, Button.kLeftBumper.value);
 
-  JoystickButton aButton = new JoystickButton(m_driverController, Button.kA.value);
-  JoystickButton bButton = new JoystickButton(m_driverController, Button.kB.value);
-
+  int right_trigger_state = 0; // 0 is off, 1 is on press, 2 is being held.  
+  int left_trigger_state = 0; // 0 is off, 1 is on press, 2 is being held.  
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -107,11 +113,10 @@ public class RobotContainer {
     // bButton.onTrue(new StartEndCommand(m_Pneumatics::OpenValve, m_Pneumatics::OpenValve, m_Pneumatics));
     // yButton.onTrue(new StartEndCommand(m_Pneumatics::CloseValve, m_Pneumatics::CloseValve, m_Pneumatics));
 
-    bButton.onTrue(shootshirt);
-    rightBumper.toggleOnTrue(new StartEndCommand(m_Conveyer::conveyorBack,m_Conveyer::conveyorOff,m_Conveyer));
+    // rightBumper.toggleOnTrue(new StartEndCommand(m_Conveyer::conveyorBack,m_Conveyer::conveyorOff,m_Conveyer));
     // leftBumper.toggleOnTrue(new StartEndCommand (m_Intake::intakeIn,m_Intake::intakeOff,m_Intake));
 
-    aButton.toggleOnTrue(new StartEndCommand (m_Conveyer::conveyorForward,m_Conveyer::conveyorOff,m_Conveyer));
+    // aButton.toggleOnTrue(new StartEndCommand (m_Conveyer::conveyorForward,m_Conveyer::conveyorOff,m_Conveyer));
     // bButton.toggleOnTrue(new StartEndCommand (m_Intake::intakeIn,m_Intake::intakeOff,m_Intake));
     
     
@@ -308,5 +313,50 @@ public class RobotContainer {
 
    
     
+  }
+
+  public void periodic(){
+    if (m_driverController.getRightTriggerAxis() > 0.5){ // checks for press down past halfway
+      // On press, it'll go to state one.
+      // On hold, it'll go to state two, cause it'll be one when the loop checks again.
+      if(right_trigger_state < 2){
+        right_trigger_state += 1;
+      }
+    }
+    else{
+      right_trigger_state = 0;
+    }
+    if (m_driverController.getLeftTriggerAxis() > 0.5){ // checks for press down past halfway
+      // On press, it'll go to state one.
+      // On hold, it'll go to state two, cause it'll be one when the loop checks again.
+      if(left_trigger_state < 2){
+        left_trigger_state += 1;
+      }
+    }
+    else{
+      left_trigger_state = 0;
+    }
+
+    System.out.println(left_trigger_state + " " + right_trigger_state);
+    long start_time = -1;
+    // System.out.println(m_driverController.getLeftTriggerAxis() + " " + m_driverController.getRightTriggerAxis());
+    if (left_trigger_state != 0){ //If left trigger is being pressed
+      if(left_trigger_state == 1){ // Set start time only on the press down
+        start_time = System.currentTimeMillis();
+      }
+
+      System.out.println(start_time);
+      long current_time = System.currentTimeMillis();
+      // Timer timer_since_pressed = new Timer();
+      // timer_since_pressed.hasElapsed(PneumaticConstants.SAFTEY_DELAY
+      if (right_trigger_state == 1 && ((current_time - start_time) >= PneumaticConstants.SAFTEY_DELAY)){ //If right trigger is pressed down past half way
+        System.out.println("FIRE THE MAIN CANNONS");
+        shootshirt.execute();
+      }
+    }
+    else{
+      // reset start time
+      start_time = -1;
+    }
   }
 }
