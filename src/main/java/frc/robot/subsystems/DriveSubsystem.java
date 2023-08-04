@@ -30,14 +30,13 @@ public class DriveSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_frontRight = new WPI_TalonFX(DriveConstants.kFrontRight);
   //right
   private final WPI_TalonFX m_rearRight = new WPI_TalonFX(DriveConstants.kRearRight);
-  private final WPI_TalonFX m_centerLeft = new WPI_TalonFX(DriveConstants.kCenterLeft);
-  private final WPI_TalonFX m_centerRight = new WPI_TalonFX(DriveConstants.kCenterRight);
+
 
   // The motors on the left side of the drive.
-  private final MotorControllerGroup m_left = new MotorControllerGroup(m_frontLeft, m_centerLeft, m_rearLeft);
+  private final MotorControllerGroup m_left = new MotorControllerGroup(m_frontLeft, m_rearLeft);
 
   // The motors on the right side of the drive.
-  private final MotorControllerGroup m_right = new MotorControllerGroup(m_frontRight, m_centerRight, m_rearRight);
+  private final MotorControllerGroup m_right = new MotorControllerGroup(m_frontRight, m_rearRight);
   
   // The robot's drive
   // THE PROBLEM CHILD. This line being uncommented was causing our issues
@@ -77,8 +76,6 @@ public class DriveSubsystem extends SubsystemBase {
     // m_frontRight
     // m_rearLeft
     // m_rearRight
-    // m_centerLeft
-    // m_centerRight
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -95,9 +92,6 @@ public class DriveSubsystem extends SubsystemBase {
     motorDefaults(m_rearLeft, false);
     motorDefaults(m_rearRight, true);
 
-    // inversions to change
-    motorDefaults(m_centerLeft, false);
-    motorDefaults(m_centerRight, false);
 
     //
 
@@ -234,8 +228,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
     m_rearLeft.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
     m_rearRight.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
-    m_centerLeft.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
-    m_centerRight.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
 
   }
 
@@ -253,13 +245,12 @@ public class DriveSubsystem extends SubsystemBase {
   public void setMotors(double leftSpeed, double rightSpeed) {
     // double clampedLeftSpeed = fastModeEnabled ? leftSpeed: leftSpeed;
     // double clampedRightSpeed = fastModeEnabled ? rightSpeed: rightSpeed;
-    
-    m_frontLeft.set(leftSpeed*1.5);
-    m_frontRight.set(rightSpeed*1.5);   //change speeds with multiplyers here
-    m_rearLeft.set(leftSpeed*1.5);
-    m_rearRight.set(rightSpeed*1.5);
-    m_centerLeft.set(rightSpeed*1.5);
-    m_centerRight.set(rightSpeed*1.5);
+    double speedMultiplyer = 0.5;
+
+    m_frontLeft.set(leftSpeed * speedMultiplyer);
+    m_frontRight.set(rightSpeed * speedMultiplyer);   //change speeds with multiplyers here
+    m_rearLeft.set(leftSpeed * speedMultiplyer);
+    m_rearRight.set(rightSpeed * speedMultiplyer);
   }
 
   /** Zeroes the heading of the robot. */
@@ -279,17 +270,13 @@ public class DriveSubsystem extends SubsystemBase {
 		m_rearLeft.configMotionAcceleration(6159, Constants.kTimeoutMs); //cruise velocity / 2, so will take 2 seconds
 		m_rearRight.configMotionCruiseVelocity(12318, Constants.kTimeoutMs);
 		m_rearRight.configMotionAcceleration(6159, Constants.kTimeoutMs);
-		m_centerLeft.configMotionCruiseVelocity(12318, Constants.kTimeoutMs);
-		m_centerLeft.configMotionAcceleration(6159, Constants.kTimeoutMs);
-    m_centerRight.configMotionCruiseVelocity(12318, Constants.kTimeoutMs);
-		m_centerRight.configMotionAcceleration(6159, Constants.kTimeoutMs);
+
 		//set up talon to use DriveMM slots
 	m_frontLeft.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
   m_frontRight.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
   m_rearLeft.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
   m_rearRight.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-  m_centerLeft.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-  m_centerRight.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+
 
 	
 		// if(isForward == true){
@@ -307,7 +294,7 @@ public class DriveSubsystem extends SubsystemBase {
 		m_frontLeft.set(ControlMode.MotionMagic, m_left_setpoint); //, DemandType.ArbitraryFeedForward, arbFF);
 		m_frontRight.set(ControlMode.MotionMagic, m_right_setpoint);//, DemandType.ArbitraryFeedForward, arbFF);
     m_rearLeft.set(ControlMode.MotionMagic, m_left_setpoint); //, DemandType.ArbitraryFeedForward, arbFF);
-    m_rearRight.set(ControlMode.MotionMagic, m_right_setpoint);//, DemandType.ArbitraryFeedForward, arbFF);
+		m_rearRight.set(ControlMode.MotionMagic, m_right_setpoint);//, DemandType.ArbitraryFeedForward, arbFF);
 		// m_left_leader.set(ControlMode.MotionMagic, target_position);
 		// m_right_leader.set(ControlMode.MotionMagic, target_position);
 	
