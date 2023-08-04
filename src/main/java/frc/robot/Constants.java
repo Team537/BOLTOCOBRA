@@ -72,6 +72,21 @@ public final class Constants {
 
   }
 
+  public static final class PneumaticConstants {
+
+    public static final int MODULE_NUMBER = 1;
+    public static final int T_SHIRT_SOLENOID_1_CHANNEL = 0;
+    public static final int T_SHIRT_SOLENOID_2_CHANNEL = 1;
+    public static final int T_SHIRT_SOLENOID_3_CHANNEL = 2;
+    public static final int T_SHIRT_SOLENOID_4_CHANNEL = 3;
+    public static final int T_SHIRT_SOLENOID_5_CHANNEL = 4;
+    public static final int T_SHIRT_SOLENOID_6_CHANNEL = 5;
+    public static final int T_SHIRT_SOLENOID_7_CHANNEL = 6;
+    public static final int T_SHIRT_SOLENOID_8_CHANNEL = 7;
+
+    public static final float SAFTEY_DELAY = 2;
+  }
+
 
   
   public static final class ArmConstants {
