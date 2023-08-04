@@ -24,11 +24,11 @@ public class ArcadeDriveCommand extends CommandBase {
     @Override
     public void execute() {
         double realTimeSpeed = speedFunction.get();
-        double realTimeTurn = .95 * turnFunction.get();
+        double realTimeTurn = 0.95 * turnFunction.get();
 
         double left = realTimeSpeed - realTimeTurn;
         double right = realTimeSpeed + realTimeTurn;
-        driveSubsystem.setMotors(.4 * left, .4 * right);
+        driveSubsystem.setMotors(left, right);
     }
 
     @Override
