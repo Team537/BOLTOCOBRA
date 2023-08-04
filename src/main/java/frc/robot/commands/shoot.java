@@ -23,6 +23,5 @@ public class shoot extends SequentialCommandGroup {
     new WaitCommand(1),
     new InstantCommand(tShirtSolenoid::CloseValve, tShirtSolenoid),
     new WaitCommand(1));
-
   }
 }

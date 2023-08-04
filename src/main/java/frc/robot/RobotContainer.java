@@ -6,7 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.wpilibj.XboxController.Button;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -74,7 +73,7 @@ import javax.swing.SwingConstants;
  * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-  public class RobotContainer {
+public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final climber m_Climber = new climber();
@@ -102,12 +101,12 @@ import javax.swing.SwingConstants;
 
   int right_trigger_state = 0; // 0 is off, 1 is on press, 2 is being held.  
   int left_trigger_state = 0; // 0 is off, 1 is on press, 2 is being held.  
+  
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-  
     xButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeIn,m_Shooter::intakeOff,m_Shooter));
     // yButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeOut,m_Shooter::intakeOff,m_Shooter));
     // bButton.onTrue(new StartEndCommand(m_Pneumatics::OpenValve, m_Pneumatics::OpenValve, m_Pneumatics));
@@ -315,48 +314,44 @@ import javax.swing.SwingConstants;
     
   }
 
-  public void periodic(){
+  public int[] update_trigger_values(){
+    int curr_right_trigger_state = right_trigger_state;
+    int curr_left_trigger_state = left_trigger_state;
+    // Right Trigger
     if (m_driverController.getRightTriggerAxis() > 0.5){ // checks for press down past halfway
       // On press, it'll go to state one.
       // On hold, it'll go to state two, cause it'll be one when the loop checks again.
-      if(right_trigger_state < 2){
-        right_trigger_state += 1;
+      if(curr_right_trigger_state < 2){
+        curr_right_trigger_state += 1;
       }
     }
     else{
-      right_trigger_state = 0;
+      curr_right_trigger_state = 0;
     }
+
+    // Left Trigger
     if (m_driverController.getLeftTriggerAxis() > 0.5){ // checks for press down past halfway
       // On press, it'll go to state one.
       // On hold, it'll go to state two, cause it'll be one when the loop checks again.
-      if(left_trigger_state < 2){
-        left_trigger_state += 1;
+      if(curr_left_trigger_state < 2){
+        curr_left_trigger_state += 1;
       }
     }
     else{
-      left_trigger_state = 0;
+      curr_left_trigger_state = 0;
     }
+    return new int[] {curr_left_trigger_state, curr_right_trigger_state};
+  }
 
-    System.out.println(left_trigger_state + " " + right_trigger_state);
-    long start_time = -1;
-    // System.out.println(m_driverController.getLeftTriggerAxis() + " " + m_driverController.getRightTriggerAxis());
-    if (left_trigger_state != 0){ //If left trigger is being pressed
-      if(left_trigger_state == 1){ // Set start time only on the press down
-        start_time = System.currentTimeMillis();
-      }
+  public void periodic(){
+    //Updates the trigger values
+    int[] updated_trigger_values = update_trigger_values();
+    left_trigger_state = updated_trigger_values[0];
+    right_trigger_state = updated_trigger_values[1];
 
-      System.out.println(start_time);
-      long current_time = System.currentTimeMillis();
-      // Timer timer_since_pressed = new Timer();
-      // timer_since_pressed.hasElapsed(PneumaticConstants.SAFTEY_DELAY
-      if (right_trigger_state == 1 && ((current_time - start_time) >= PneumaticConstants.SAFTEY_DELAY)){ //If right trigger is pressed down past half way
-        System.out.println("FIRE THE MAIN CANNONS");
-        shootshirt.execute();
-      }
-    }
-    else{
-      // reset start time
-      start_time = -1;
+    // Checks if it can shoot
+    if (m_Shooter.can_shoot(left_trigger_state, right_trigger_state)){
+      shootshirt.execute();
     }
   }
 }
