@@ -17,27 +17,27 @@ public class Shooter extends SubsystemBase {
   Timer timer_since_pressed = new Timer();
 
   public boolean can_shoot(int left_trigger_state, int right_trigger_state){
-    System.out.println(left_trigger_state + " " + right_trigger_state);
+    
     // System.out.println(m_driverController.getLeftTriggerAxis() + " " + m_driverController.getRightTriggerAxis());
     if (left_trigger_state != 0){ //If left trigger is being pressed
-      if(left_trigger_state == 1){ // Set start time only on the press down
-        // start_time = System.currentTimeMillis();
-        Timer timer_since_pressed = new Timer();
+
+      // Restarts/starts time when the left trigger pressed down
+      if(left_trigger_state == 1){
+        timer_since_pressed.reset();
+        timer_since_pressed.start();
       }
 
-      // long current_time = System.currentTimeMillis();
-      // System.out.println(start_time + " " + current_time);
-      // ((current_time - start_time) >= PneumaticConstants.SAFTEY_DELAY)
-      if (right_trigger_state != 0 && timer_since_pressed.hasElapsed(PneumaticConstants.SAFTEY_DELAY)){ //If right trigger is pressed down past half way
-        System.out.println("FIRE THE MAIN CANNONS");
-        // start_time = System.currentTimeMillis();  // Resets the cooldown, so you have to wait another <SAFTEY_DELAY> before shooting
-        timer_since_pressed = new Timer();
-        return true;
+      // Checks if the right trigger just got pressed
+      if(right_trigger_state == 1){
+        if (timer_since_pressed.hasElapsed(PneumaticConstants.SAFTEY_DELAY)){ // Checks if the <SAFTEY_DELAY> has passed
+          System.out.println("FIRE THE MAIN CANNONS");
+          timer_since_pressed.reset(); // Resets the timer if you shoot, so you have to wait again before firing
+          return true;
+        }
+        // Resets the timer if you press the right trigger
+        // So you have to wait again before firing (Requiries a reset timer before the return true to work properly)
+        timer_since_pressed.reset();  
       }
-    }
-    else{
-      // reset start time
-      start_time = -1;
     }
     return false;
   }
