@@ -37,24 +37,7 @@ public class Pneumatics extends SubsystemBase {
     new Solenoid(PneumaticsModuleType.CTREPCM, PneumaticConstants.T_SHIRT_SOLENOID_7_CHANNEL),
     new Solenoid(PneumaticsModuleType.CTREPCM, PneumaticConstants.T_SHIRT_SOLENOID_8_CHANNEL),
   };
-  private boolean Tube0;
-  private boolean Tube1;
-  private boolean Tube2;
-  private boolean Tube3;
-  private boolean Tube4;
-  private boolean Tube5;
-  private boolean Tube6;
-  private boolean Tube7;
-  public final boolean TubeList[] = {
-    Tube0 = true,
-    Tube1 = true,
-    Tube2 = true,
-    Tube3 = true,
-    Tube4 = true,
-    Tube5 = true,
-    Tube6 = true,
-    Tube7 = true
-  };
+
 
   
   public boolean can_shoot(int left_trigger_state, int right_trigger_state){
@@ -99,24 +82,18 @@ public class Pneumatics extends SubsystemBase {
   }
 
   public void OpenValve() {
-    GetTubeBool();
-    if (TubeList[iSolenoid] == true) {
-      SmartDashboard.putBoolean("Active Tube" + iSolenoid, true);
 
-      // Opens valve # iSolenoid
-      SolenoidList[iSolenoid].set(true);
-    }
-      System.out.println("Barrel Opened: " + iSolenoid);
+    SmartDashboard.putBoolean("Active Tube" + iSolenoid, true);
+    // Opens valve # iSolenoid
+    SolenoidList[iSolenoid].set(true);
+    System.out.println("Barrel Opened: " + iSolenoid);
   }
 
   public void CloseValve () {
-    if(TubeList[iSolenoid] == true) {
-      SmartDashboard.putBoolean("Active Tube " + iSolenoid, false);
-
-      // Closes valve # iSolenoid
-      SolenoidList[iSolenoid].set(false);
-    }
-
+   
+    SmartDashboard.putBoolean("Active Tube " + iSolenoid, false);
+    // Closes valve # iSolenoid
+    SolenoidList[iSolenoid].set(false);
     System.out.println("Barrel Closed: " + iSolenoid);
 
     // Iterates through the soliniods in Solenoid List
@@ -124,11 +101,13 @@ public class Pneumatics extends SubsystemBase {
     System.out.println("Solendoid incremented to :" + iSolenoid);
 
     // Upon hitting the end of the list, set the iterator back to 0
-    if (iSolenoid >= SolenoidList.length) {
+
+    //autoloop removed
+    /**if (iSolenoid >= SolenoidList.length) {
       iSolenoid = 0;
 
       System.out.println("Solenoid List Reset");
-    }
+    }**/
 
     //  m_RdoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
   }
@@ -138,14 +117,6 @@ public class Pneumatics extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.setDefaultBoolean("Tube 0 Status", TubeList[0]);
-    SmartDashboard.setDefaultBoolean("Tube 1 Status", TubeList[1]);
-    SmartDashboard.setDefaultBoolean("Tube 2 Status", TubeList[2]);
-    SmartDashboard.setDefaultBoolean("Tube 3 Status", TubeList[3]);
-    SmartDashboard.setDefaultBoolean("Tube 4 Status", TubeList[4]);
-    SmartDashboard.setDefaultBoolean("Tube 5 Status", TubeList[5]);
-    SmartDashboard.setDefaultBoolean("Tube 6 Status", TubeList[6]);
-    SmartDashboard.setDefaultBoolean("Tube 7 Status", TubeList[7]);
 
     SmartDashboard.putBoolean("Active Tube 0", false);
     SmartDashboard.putBoolean("Active Tube 1", false);
@@ -160,16 +131,6 @@ public class Pneumatics extends SubsystemBase {
 
   }
 
-  public void GetTubeBool() {
-    TubeList[iSolenoid] = SmartDashboard.getBoolean("Tube " + iSolenoid + " Status", TubeList[iSolenoid]);
-  //   TubeList[0] = SmartDashboard.getBoolean("Tube 0 Status", Tube0);
-  //   TubeList[1] = SmartDashboard.getBoolean("Tube 1 Status", Tube1);
-  //   TubeList[2] = SmartDashboard.getBoolean("Tube 2 Status", Tube2);
-  //   TubeList[3] = SmartDashboard.getBoolean("Tube 3 Status", Tube3);
-  //   TubeList[4] = SmartDashboard.getBoolean("Tube 4 Status", Tube4);
-  //   TubeList[5] = SmartDashboard.getBoolean("Tube 5 Status", Tube5);
-  //   TubeList[6] = SmartDashboard.getBoolean("Tube 6 Status", Tube6);
-  //   TubeList[7] = SmartDashboard.getBoolean("Tube 7 Status", Tube7);
-  }
+
   
 }
