@@ -349,7 +349,7 @@ public class RobotContainer {
     left_trigger_state = updated_trigger_values[0];
     right_trigger_state = updated_trigger_values[1];
     // Checks if it can shoot
-    if (m_Shooter.can_shoot(left_trigger_state, right_trigger_state)){
+    if (m_Pneumatics.can_shoot(left_trigger_state, right_trigger_state)){
       shootshirt.execute();
     }
   }

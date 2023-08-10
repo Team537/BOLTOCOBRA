@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import frc.robot.Constants.PneumaticConstants;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.time.chrono.IsoChronology;
@@ -19,6 +20,9 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pneumatics extends SubsystemBase {
+  long start_time = -1;
+  Timer timer_since_pressed = new Timer();
+
   PneumaticHub m_PneumaticHub = new PneumaticHub(PneumaticConstants.MODULE_NUMBER);  
   // private static int RforwardChannel =0;
   // private static int RreverseChannel =1;
@@ -51,6 +55,33 @@ public class Pneumatics extends SubsystemBase {
     Tube6 = true,
     Tube7 = true
   };
+
+  
+  public boolean can_shoot(int left_trigger_state, int right_trigger_state){
+    
+    // System.out.println(m_driverController.getLeftTriggerAxis() + " " + m_driverController.getRightTriggerAxis());
+    if (left_trigger_state != 0){ //If left trigger is being pressed
+
+      // Restarts/starts time when the left trigger pressed down
+      if(left_trigger_state == 1){
+        timer_since_pressed.reset();
+        timer_since_pressed.start();
+      }
+
+      // Checks if the right trigger just got pressed
+      if(right_trigger_state == 1){
+        if (timer_since_pressed.hasElapsed(PneumaticConstants.SAFTEY_DELAY)){ // Checks if the <SAFTEY_DELAY> has passed
+          System.out.println("FIRE THE MAIN CANNONS");
+          timer_since_pressed.reset(); // Resets the timer if you shoot, so you have to wait again before firing
+          return true;
+        }
+        // Resets the timer if you press the right trigger
+        // So you have to wait again before firing (Requiries a reset timer before the return true to work properly)
+        timer_since_pressed.reset();  
+      }
+    }
+    return false;
+  }
 
   public int iSolenoid = 0;
   public boolean safety = false;
