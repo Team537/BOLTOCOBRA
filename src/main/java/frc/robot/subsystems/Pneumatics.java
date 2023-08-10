@@ -66,12 +66,14 @@ public class Pneumatics extends SubsystemBase {
     return false;
   }
 
+  //non constant variables
   public int iSolenoid = 0;
   public boolean safety = false;
- // DoubleSolenoid m_RdoubleSolenoid = m_PneumaticHub.makeDoubleSolenoid(RforwardChannel,RreverseChannel);
+  public boolean reset = false;
+  public boolean arrayDone = false;
 
   public Pneumatics() {
-
+    
 
   }
 
@@ -82,34 +84,48 @@ public class Pneumatics extends SubsystemBase {
   }
 
   public void OpenValve() {
+    if (arrayDone == false) {
 
-    SmartDashboard.putBoolean("Active Tube" + iSolenoid, true);
-    // Opens valve # iSolenoid
-    SolenoidList[iSolenoid].set(true);
-    System.out.println("Barrel Opened: " + iSolenoid);
+       SmartDashboard.putBoolean("Active Tube" + iSolenoid, true);
+      // Opens valve # iSolenoid
+      SolenoidList[iSolenoid].set(true);
+      System.out.println("Barrel Opened: " + iSolenoid);
+    }
   }
 
   public void CloseValve () {
-   
-    SmartDashboard.putBoolean("Active Tube " + iSolenoid, false);
-    // Closes valve # iSolenoid
-    SolenoidList[iSolenoid].set(false);
-    System.out.println("Barrel Closed: " + iSolenoid);
+    if (arrayDone == false) {
+      SmartDashboard.putBoolean("Active Tube " + iSolenoid, false);
+      // Closes valve # iSolenoid
+      SolenoidList[iSolenoid].set(false);
+      System.out.println("Barrel Closed: " + iSolenoid);
 
-    // Iterates through the soliniods in Solenoid List
-    iSolenoid += 1;
-    System.out.println("Solendoid incremented to :" + iSolenoid);
+      // Iterates through the soliniods in Solenoid List
+      iSolenoid += 1;
+      System.out.println("Solendoid incremented to :" + iSolenoid);
 
-    // Upon hitting the end of the list, set the iterator back to 0
+      // Upon hitting the end of the list, set the iterator back to 0
 
-    //autoloop removed
-    /**if (iSolenoid >= SolenoidList.length) {
+      //autoloop removed
+      if (iSolenoid >= SolenoidList.length) {
+        arrayDone = true;
+        // System.out.println("Solenoid List Reset");
+      }
+    }
+  }
+
+  public void ResetShootArray() {
+    reset = SmartDashboard.getBoolean("ResetArrayButton", reset);
+    if (reset == true) {
       iSolenoid = 0;
+      System.out.println("Solenoid iterator set to 0");
+      
+      arrayDone = false;
+      //resets the bool so you dont accidently reset array again
+      reset = false;
+      SmartDashboard.putBoolean("ResetArrayButton", reset);
+    }
 
-      System.out.println("Solenoid List Reset");
-    }**/
-
-    //  m_RdoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
   }
 
 
@@ -117,6 +133,7 @@ public class Pneumatics extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Solenoid Cycle Num", iSolenoid);
 
     SmartDashboard.putBoolean("Active Tube 0", false);
     SmartDashboard.putBoolean("Active Tube 1", false);

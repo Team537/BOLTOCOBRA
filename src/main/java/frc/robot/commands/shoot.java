@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Pneumatics;
+import frc.robot.Constants.ShootCommandConsants;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -20,8 +21,8 @@ public class shoot extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new InstantCommand(tShirtSolenoid::OpenValve, tShirtSolenoid),
     // Wait Command keeps the valve open for a predetermined amount of time
-    new WaitCommand(1),
+    new WaitCommand(ShootCommandConsants.SECONDS),
     new InstantCommand(tShirtSolenoid::CloseValve, tShirtSolenoid),
-    new WaitCommand(1));
+    new WaitCommand(ShootCommandConsants.SECONDS));
   }
 }

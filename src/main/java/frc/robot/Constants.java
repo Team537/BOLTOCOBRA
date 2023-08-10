@@ -228,4 +228,7 @@ public final class Constants {
   public static class ConveyerConstants {
     public static final int kConveyer = 6;
   }
+  public static class ShootCommandConsants {
+    public static final double SECONDS = 1;
+  }
 }

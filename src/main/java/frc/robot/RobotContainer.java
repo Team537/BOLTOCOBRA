@@ -47,6 +47,7 @@ import frc.robot.commands.shoot;
 import frc.robot.commands.toggleFastMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -107,7 +108,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    xButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeIn,m_Shooter::intakeOff,m_Shooter));
+    // xButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeIn,m_Shooter::intakeOff,m_Shooter));
     // yButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeOut,m_Shooter::intakeOff,m_Shooter));
     // bButton.onTrue(new StartEndCommand(m_Pneumatics::OpenValve, m_Pneumatics::OpenValve, m_Pneumatics));
     // yButton.onTrue(new StartEndCommand(m_Pneumatics::CloseValve, m_Pneumatics::CloseValve, m_Pneumatics));
@@ -118,6 +119,9 @@ public class RobotContainer {
     // aButton.toggleOnTrue(new StartEndCommand (m_Conveyer::conveyorForward,m_Conveyer::conveyorOff,m_Conveyer));
     // bButton.toggleOnTrue(new StartEndCommand (m_Intake::intakeIn,m_Intake::intakeOff,m_Intake));
     
+    aButton.onTrue(shootshirt);
+
+    bButton.onTrue(new InstantCommand(m_Pneumatics::ResetShootArray, m_Pneumatics));
     
       // m_Climber.setDefaulxtCommand(
       //   new RunCommand(
@@ -160,7 +164,7 @@ public class RobotContainer {
           new ArcadeDriveCommand(
                           m_robotDrive,
                           () -> m_driverController.getLeftY(),
-                          () -> m_driverController.getRightX())
+                          () -> m_driverController.getLeftX())
           );
   }
 
