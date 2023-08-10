@@ -28,7 +28,15 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Arm": "Subsystem",
       "/SmartDashboard/DriveSubsystem": "Subsystem",
+      "/SmartDashboard/Reset Solenoid Array": "Command",
       "/SmartDashboard/Scheduler": "Scheduler"
+    },
+    "windows": {
+      "/SmartDashboard/Reset Solenoid Array": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {

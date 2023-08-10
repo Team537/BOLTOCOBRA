@@ -19,10 +19,14 @@ public class shoot extends SequentialCommandGroup {
   public shoot(Pneumatics tShirtSolenoid) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new InstantCommand(tShirtSolenoid::OpenValve, tShirtSolenoid),
+    addCommands( 
+    new InstantCommand(tShirtSolenoid::resetCooldownReady, tShirtSolenoid),
+    new InstantCommand(tShirtSolenoid::OpenValve, tShirtSolenoid),
     // Wait Command keeps the valve open for a predetermined amount of time
     new WaitCommand(ShootCommandConsants.SECONDS),
     new InstantCommand(tShirtSolenoid::CloseValve, tShirtSolenoid),
-    new WaitCommand(ShootCommandConsants.SECONDS));
+    new WaitCommand(ShootCommandConsants.SECONDS),
+    new InstantCommand(tShirtSolenoid::cooldownReady, tShirtSolenoid));
+    
   }
 }

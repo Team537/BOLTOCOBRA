@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Pneumatics extends SubsystemBase {
   
   private final Timer sincePressedTimer = new Timer();
+  public boolean safety = false;
+  public boolean cooldownReady = true;
 
   PneumaticHub pneumaticHub = new PneumaticHub(PneumaticConstants.MODULE_NUMBER);  
   // private static int RforwardChannel =0;
@@ -52,23 +54,32 @@ public class Pneumatics extends SubsystemBase {
       }
 
       // Checks if the right trigger just got pressed
-      if(rightTriggerState == 1){
-        if (sincePressedTimer.hasElapsed(PneumaticConstants.SAFTEY_DELAY)){ // Checks if the <SAFTEY_DELAY> has passed
-          System.out.println("FIRE THE MAIN CANNONS");
-          sincePressedTimer.reset(); // Resets the timer if you shoot, so you have to wait again before firing
+    
+        if (sincePressedTimer.hasElapsed(PneumaticConstants.SAFTEY_DELAY)){
+          safety = true;
+          if(rightTriggerState == 1){
+             System.out.println("FIRE THE MAIN CANNONS");
+          sincePressedTimer.reset();
+          safety = false;
+          
           return true;
+        
+        }// Checks if the <SAFTEY_DELAY> has passed
+           // Resets the timer if you shoot, so you have to wait again before firing
+           
         }
+        
         // Resets the timer if you press the right trigger
         // So you have to wait again before firing (Requiries a reset timer before the return true to work properly)
-        sincePressedTimer.reset();  
-      }
+         
+      
     }
     return false;
   }
 
   //non constant variables
   public int iSolenoid = 0;
-  public boolean safety = false;
+  
   public boolean reset = false;
   public boolean arrayDone = false;
 
@@ -86,7 +97,7 @@ public class Pneumatics extends SubsystemBase {
   public void OpenValve() {
     if (arrayDone == false) {
 
-       SmartDashboard.putBoolean("Active Tube " + iSolenoid, true);
+       
       // Opens valve # iSolenoid
       SolenoidList[iSolenoid].set(true);
       System.out.println("Barrel Opened: " + iSolenoid);
@@ -95,7 +106,7 @@ public class Pneumatics extends SubsystemBase {
 
   public void CloseValve () {
     if (arrayDone == false) {
-      SmartDashboard.putBoolean("Active Tube " + iSolenoid, false);
+      
       // Closes valve # iSolenoid
       SolenoidList[iSolenoid].set(false);
       System.out.println("Barrel Closed: " + iSolenoid);
@@ -128,21 +139,24 @@ public class Pneumatics extends SubsystemBase {
 
   }
 
+  public void cooldownReady() {
+   cooldownReady = true;
+  }
+
+  public void resetCooldownReady() {
+    cooldownReady = false;
+   }
 
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Solenoid Cycle Num", iSolenoid);
+    SmartDashboard.putNumber(" Active Solenoid Cycle Num", iSolenoid);
+    SmartDashboard.putBoolean("Cooldown Ready", cooldownReady);
+    SmartDashboard.putBoolean("Safety Ready", safety);
+    SmartDashboard.putBoolean("Solenoid Array Done", arrayDone);
    
-    SmartDashboard.putBoolean("Active Tube 0", false);
-    SmartDashboard.putBoolean("Active Tube 1", false);
-    SmartDashboard.putBoolean("Active Tube 2", false);
-    SmartDashboard.putBoolean("Active Tube 3", false);
-    SmartDashboard.putBoolean("Active Tube 4", false);
-    SmartDashboard.putBoolean("Active Tube 5", false);
-    SmartDashboard.putBoolean("Active Tube 6", false);
-    SmartDashboard.putBoolean("Active Tube 7", false);
+    
 
     
 

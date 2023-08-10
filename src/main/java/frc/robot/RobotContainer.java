@@ -121,7 +121,7 @@ public class RobotContainer {
     
     aButton.onTrue(shootshirt);
 
-    bButton.onTrue(new InstantCommand(m_Pneumatics::ResetShootArray, m_Pneumatics));
+    SmartDashboard.putData("Reset Solenoid Array",new InstantCommand(m_Pneumatics::ResetShootArray, m_Pneumatics));
     
       // m_Climber.setDefaulxtCommand(
       //   new RunCommand(
