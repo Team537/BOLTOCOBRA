@@ -100,8 +100,8 @@ public class RobotContainer {
   JoystickButton rightBumper = new JoystickButton(m_driverController, Button.kRightBumper.value);
   JoystickButton leftBumper = new JoystickButton(m_driverController, Button.kLeftBumper.value);
 
-  int right_trigger_state = 0; // 0 is off, 1 is on press, 2 is being held.  
-  int left_trigger_state = 0; // 0 is off, 1 is on press, 2 is being held.  
+  int rightTriggerState = 0; // 0 is off, 1 is on press, 2 is being held.  
+  int leftTriggerState = 0; // 0 is off, 1 is on press, 2 is being held.  
   
 
   /**
@@ -192,168 +192,44 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-  
-
-  
-    
-   //Create a voltage constraint to ensure we don't accelerate too fast
-    var autoVoltageConstraint = 
-            new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(
-                DriveConstants.ksVolts,
-                DriveConstants.kvVoltSecondsPerMeter,
-                DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            4);
-
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond, 
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
-
-     String RedBallDriveOut = "paths/Red Ball Drive Out/1.wpilib.json";
-     Trajectory RedBallDriveOutTrajectory = new Trajectory();
-
-     try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(RedBallDriveOut);
-      RedBallDriveOutTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-   } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + RedBallDriveOut, ex.getStackTrace());
-   }
-
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 0), new Translation2d(1.5, 0)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(2, 0, new Rotation2d(0)),
-            // Pass config
-            config);
-
-    // RamseteCommand exampleramseteCommand =
-    //     new RamseteCommand(
-    //         exampleTrajectory,
-    //         m_robotDrive::getPose,
-    //         new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-    //         new SimpleMotorFeedforward(
-    //             DriveConstants.ksVolts, //static friction gain
-    //             DriveConstants.kvVoltSecondsPerMeter, //velocity friction gain
-    //             DriveConstants.kaVoltSecondsSquaredPerMeter), //acceleration friction gain
-    //         DriveConstants.kDriveKinematics,
-    //         m_robotDrive::getWheelSpeeds,
-    //         new PIDController(DriveConstants.kPDriveVel, 0, 0), //PID
-    //         new PIDController(DriveConstants.kPDriveVel, 0, 0), //PID
-    //         // RamseteCommand passes volts to the callback
-    //         m_robotDrive::tankDriveVolts,
-    //         m_robotDrive);
-
-    //         RamseteCommand RedBallDriveOutRamsete =
-    //         new RamseteCommand(
-    //             RedBallDriveOutTrajectory,
-    //             m_robotDrive::getPose,
-    //             new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-    //             new SimpleMotorFeedforward(
-    //                 DriveConstants.ksVolts,
-    //                 DriveConstants.kvVoltSecondsPerMeter,
-    //                 DriveConstants.kaVoltSecondsSquaredPerMeter),
-    //             DriveConstants.kDriveKinematics,
-    //             m_robotDrive::getWheelSpeeds,
-    //             new PIDController(DriveConstants.kPDriveVel, 0, 0), //p should be more than 0 
-    //             new PIDController(DriveConstants.kPDriveVel, 0, 0),
-    //             // RamseteCommand passes volts to the callback
-    //             m_robotDrive::tankDriveVolts,
-    //             m_robotDrive);
-
-   // Reset odometry to the starting pose of the trajectory.
-   m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-   //Run path following command, then stop at the end.
-  // return exampleramseteCommand.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
-
-  
-   // new DriveForwardCommand(m_robotDrive, .05, .05).withTimeout(1),
-    //new GyroTurn(90, m_robotDrive).withTimeout(7)
-
-    
-    return new SequentialCommandGroup(
-      new RunCommand(m_Intake::intakeOut, m_Intake).withTimeout(3),
-      new RunCommand(m_Intake::intakeOff, m_Intake).withTimeout(1),
-      new DriveForwardCommand(m_robotDrive, .15, .15).withTimeout(3));
-
-      //new MotionMagicDrive(m_robotDrive, 2.19)); 
-      // new GyroTurn(90, m_robotDrive),
-     // new MotionMagicDrive(m_robotDrive, 2))
-    // .andThen());
-                                
-    
-    
-    // new WaitCommand(3),
-    // new DriveForwardCommand(m_robotDrive).withTimeout(4)
-
-    // new DriveStopCommand(driveSubsystem)
-
-
-
-  //  return RedBallDriveOutRamsete.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
-
-   
-
-
-  //  return  new SequentialCommandGroup( new RunCommand(m_robotDrive::MagicTaxi));
-     
-    
-    // Run path following command, then stop at the end.
- //   return ramseteCommand.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
-
-   
-    
-  }
+ 
 
   public int[] update_trigger_values(){
-    int curr_right_trigger_state = right_trigger_state;
-    int curr_left_trigger_state = left_trigger_state;
+    int currentRightTriggerState = rightTriggerState;
+    int currentLeftTriggerState = leftTriggerState;
     // Right Trigger
     if (m_driverController.getRightTriggerAxis() > 0.5){ // checks for press down past halfway
       // On press, it'll go to state one.
       // On hold, it'll go to state two, cause it'll be one when the loop checks again.
-      if(curr_right_trigger_state < 2){
-        curr_right_trigger_state += 1;
+      if(currentRightTriggerState < 2){
+        currentRightTriggerState += 1;
       }
     }
     else{
-      curr_right_trigger_state = 0;
+      currentRightTriggerState = 0;
     }
 
     // Left Trigger
     if (m_driverController.getLeftTriggerAxis() > 0.5){ // checks for press down past halfway
       // On press, it'll go to state one.
       // On hold, it'll go to state two, cause it'll be one when the loop checks again.
-      if(curr_left_trigger_state < 2){
-        curr_left_trigger_state += 1;
+      if(currentLeftTriggerState < 2){
+        currentLeftTriggerState += 1;
       }
     }
     else{
-      curr_left_trigger_state = 0;
+      currentLeftTriggerState = 0;
     }
-    return new int[] {curr_left_trigger_state, curr_right_trigger_state};
+    return new int[] {currentLeftTriggerState, currentRightTriggerState};
   }
 
   public void periodic(){
     //Updates the trigger values
-    int[] updated_trigger_values = update_trigger_values();
-    left_trigger_state = updated_trigger_values[0];
-    right_trigger_state = updated_trigger_values[1];
+    int[] updatedTriggerValues = update_trigger_values();
+    leftTriggerState = updatedTriggerValues[0];
+    rightTriggerState = updatedTriggerValues[1];
     // Checks if it can shoot
-    if (m_Pneumatics.can_shoot(left_trigger_state, right_trigger_state)){
+    if (m_Pneumatics.canShoot(leftTriggerState, rightTriggerState)){
       shootshirt.execute();
     }
   }
