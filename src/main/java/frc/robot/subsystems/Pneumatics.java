@@ -86,7 +86,7 @@ public class Pneumatics extends SubsystemBase {
   public void OpenValve() {
     if (arrayDone == false) {
 
-       SmartDashboard.putBoolean("Active Tube" + iSolenoid, true);
+       SmartDashboard.putBoolean("Active Tube " + iSolenoid, true);
       // Opens valve # iSolenoid
       SolenoidList[iSolenoid].set(true);
       System.out.println("Barrel Opened: " + iSolenoid);
@@ -115,16 +115,16 @@ public class Pneumatics extends SubsystemBase {
   }
 
   public void ResetShootArray() {
-    reset = SmartDashboard.getBoolean("ResetArrayButton", reset);
-    if (reset == true) {
+    
+   
       iSolenoid = 0;
       System.out.println("Solenoid iterator set to 0");
       
       arrayDone = false;
       //resets the bool so you dont accidently reset array again
       reset = false;
-      SmartDashboard.putBoolean("ResetArrayButton", reset);
-    }
+      
+    
 
   }
 
@@ -134,7 +134,7 @@ public class Pneumatics extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Solenoid Cycle Num", iSolenoid);
-
+   
     SmartDashboard.putBoolean("Active Tube 0", false);
     SmartDashboard.putBoolean("Active Tube 1", false);
     SmartDashboard.putBoolean("Active Tube 2", false);

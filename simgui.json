@@ -30,5 +30,12 @@
       "/SmartDashboard/DriveSubsystem": "Subsystem",
       "/SmartDashboard/Scheduler": "Scheduler"
     }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      }
+    }
   }
 }

@@ -77,15 +77,15 @@ import javax.swing.SwingConstants;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final climber m_Climber = new climber();
-  private final Intake m_Intake = new Intake(); 
-  private final Arm m_Arm = new Arm();
+  // private final climber m_Climber = new climber();
+  // private final Intake m_Intake = new Intake(); 
+  // private final Arm m_Arm = new Arm();
   private final Pneumatics m_Pneumatics = new Pneumatics();
   private final SlewRateLimiter Left = new SlewRateLimiter(3);
   private final SlewRateLimiter Right = new SlewRateLimiter(3);
-  private final camera m_camera = new camera();
-  private final Conveyer m_Conveyer = new Conveyer();
-  private final Shooter m_Shooter = new Shooter();
+  // private final camera m_camera = new camera();
+  // private final Conveyer m_Conveyer = new Conveyer();
+  // private final Shooter m_Shooter = new Shooter();
   
   Command shootshirt = new shoot(m_Pneumatics);
   // The driver's controller
@@ -230,7 +230,7 @@ public class RobotContainer {
     rightTriggerState = updatedTriggerValues[1];
     // Checks if it can shoot
     if (m_Pneumatics.canShoot(leftTriggerState, rightTriggerState)){
-      shootshirt.execute();
+      shootshirt.schedule();
     }
   }
 }
