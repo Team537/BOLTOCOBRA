@@ -46,16 +46,18 @@ public class Pneumatics extends SubsystemBase {
      
     // System.out.println(m_driverController.getLeftTriggerAxis() + " " + m_driverController.getRightTriggerAxis());
     if (leftTriggerState != 0){ //If left trigger is being pressed
-
+     
       // Restarts/starts time when the left trigger pressed down
       if(leftTriggerState == 1){
         sincePressedTimer.reset();
         sincePressedTimer.start();
       }
 
+     
+
       // Checks if the right trigger just got pressed
     
-        if (sincePressedTimer.hasElapsed(PneumaticConstants.SAFTEY_DELAY)){
+        if (sincePressedTimer.hasElapsed(PneumaticConstants.SAFTEY_DELAY) ){
           safety = true;
           if(rightTriggerState == 1){
              System.out.println("FIRE THE MAIN CANNONS");
@@ -64,16 +66,22 @@ public class Pneumatics extends SubsystemBase {
           
           return true;
         
-        }// Checks if the <SAFTEY_DELAY> has passed
+        } // Checks if the <SAFTEY_DELAY> has passed
            // Resets the timer if you shoot, so you have to wait again before firing
            
         }
+        
         
         // Resets the timer if you press the right trigger
         // So you have to wait again before firing (Requiries a reset timer before the return true to work properly)
          
       
+    } else {
+
+      safety = false;
+
     }
+    
     return false;
   }
 
