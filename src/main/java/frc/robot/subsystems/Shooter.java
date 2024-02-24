@@ -27,9 +27,19 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   
-  public void intakeIn() {
+  public void intake1() {
+    m_Intake.set(-1);
+  }
+  public void intake09() {
+    m_Intake.set(-0.9);
+  }
+  public void intake08() {
     m_Intake.set(-0.8);
   }
+  public void intake07() {
+    m_Intake.set(-0.7);
+  }
+
   public void intakeOff() {
     m_Intake.set(0.0);
   }

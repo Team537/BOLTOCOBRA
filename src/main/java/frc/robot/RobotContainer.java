@@ -51,6 +51,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -93,13 +94,21 @@ public class RobotContainer {
   JoystickButton aButton = new JoystickButton(m_driverController, Button.kA.value);
   JoystickButton bButton = new JoystickButton(m_driverController, Button.kB.value);
 
+  POVButton dPadUpButton = new POVButton(m_driverController, 0);
+  POVButton dPadDownButton = new POVButton(m_driverController, 180);
+  POVButton dPadLeftButton = new POVButton(m_driverController, 90);
+  POVButton dPadRightButton = new POVButton(m_driverController, 270);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
   
-    xButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeIn,m_Shooter::intakeOff,m_Shooter));
+    dPadUpButton.toggleOnTrue(new StartEndCommand(m_Shooter::intake1,m_Shooter::intakeOff,m_Shooter));
+    dPadLeftButton.toggleOnTrue(new StartEndCommand(m_Shooter::intake09,m_Shooter::intakeOff,m_Shooter));
+    dPadRightButton.toggleOnTrue(new StartEndCommand(m_Shooter::intake08,m_Shooter::intakeOff,m_Shooter));
+    dPadDownButton.toggleOnTrue(new StartEndCommand(m_Shooter::intake07,m_Shooter::intakeOff,m_Shooter));
     yButton.toggleOnTrue(new StartEndCommand(m_Shooter::intakeOut,m_Shooter::intakeOff,m_Shooter));
 
     rightBumper.toggleOnTrue(new StartEndCommand(m_Conveyer::conveyorBack,m_Conveyer::conveyorOff,m_Conveyer));
